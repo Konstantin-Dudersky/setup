@@ -13,3 +13,4 @@ def run(from_port: int = 80, to_port: int = 8000) -> None:
     )
     os.system('sudo sh -c "iptables-save > /etc/iptables.rules"')
     os.system("sudo apt-get install iptables-persistent")
+    print('-> Если при перезагрузке редирект не сохраняется, то дописать в файл:\n/etc/rc.local\nстроку:\niptables-restore < /etc/iptables.rules')

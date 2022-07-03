@@ -40,8 +40,35 @@ poetry run poe systemd
 
 ### сборка проекта
 
-```sh
+```toml
 [tool.poe.tasks]
 ng_build = {script = "src.ng_build:main(work_dir_relative='../client', project='client')"}
 ```
 
+```sh
+poetry run poe ng_build
+```
+
+### разворачивание проекта
+
+```toml
+[tool.poe.tasks]
+ng_dist = {script = "src.ng_dist:main(source_dir_rel='../client', target_dir_rel='../server/static/', project='client')"}
+```
+
+```sh
+poetry run poe ng_build
+```
+
+
+
+## tauri
+
+```sh
+[tool.poe.tasks]
+tauri_build = {script = "src.tauri_build:main(work_dir_relative='../client', project='client')"}
+```
+
+```sh
+poetry run poe tauri_build
+```
