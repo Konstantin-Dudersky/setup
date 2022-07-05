@@ -13,6 +13,7 @@ def main(
     :param target_dir_rel: относительный путь к целевой папке
     :param project: _description_, defaults to "client"
     """
+    os.system("sudo apt install -y unzip")
     curr_dir = os.getcwd()
     source_file = os.path.abspath(
         os.path.join(curr_dir, source_dir_rel, "dist", project + ".zip"),
