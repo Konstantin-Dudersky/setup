@@ -57,7 +57,7 @@ ng_dist = {script = "src.ng_dist:main(source_dir_rel='../client', target_dir_rel
 ```
 
 ```sh
-poetry run poe ng_build
+poetry run poe ng_dist
 ```
 
 
