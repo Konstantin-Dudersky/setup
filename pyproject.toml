@@ -38,6 +38,7 @@ git_sync = {script = "src.git_sync:main"}
 ng_build = {script = "src.ng_build:main(work_dir_relative='../client', project='client')"}
 ng_dist = {script = "src.ng_dist:main(source_dir_rel='../client', target_dir_rel='../server/static/', project='client')"}
 tauri_build = {script = "src.tauri_build:main(work_dir_relative='../client', project='client')"}
+systemd = {script = "src.systemd:main(service_name='<service_name>', description='<description>', work_dir_rel='<work_dir_rel>'"}
 
 [tool.pylint.BASIC]
 good-names = 'db'
