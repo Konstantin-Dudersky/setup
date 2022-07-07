@@ -5,8 +5,8 @@ name = "konstantin_setup"
 version = "0.0.2"
 
 [tool.poetry.dependencies]
-python = "^3.10"
 poethepoet = "*"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -34,6 +34,7 @@ requires = ["poetry-core>=1.0.0"]
 line-length = 79
 
 [tool.poe.tasks]
+git_sync = {script = "src.git_sync:main"}
 ng_build = {script = "src.ng_build:main(work_dir_relative='../client', project='client')"}
 ng_dist = {script = "src.ng_dist:main(source_dir_rel='../client', target_dir_rel='../server/static/', project='client')"}
 tauri_build = {script = "src.tauri_build:main(work_dir_relative='../client', project='client')"}

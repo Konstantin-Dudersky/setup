@@ -72,3 +72,17 @@ tauri_build = {script = "src.tauri_build:main(work_dir_relative='../client', pro
 ```sh
 poetry run poe tauri_build
 ```
+
+## Github
+
+Синхронизация проекта с github (локальные изменения теряются)
+
+```toml
+[tool.poe.tasks]
+git_sync = {script = "src.git_sync:main"}
+```
+
+```sh
+poetry run poe git_sync
+```
+
