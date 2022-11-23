@@ -1,7 +1,7 @@
 """Синхронизация кода."""
 
 import logging
-import subprocess
+import os
 from typing import Final
 
 from .internal.base_task import BaseTask
@@ -43,9 +43,9 @@ class CodeSync(BaseTask):
         self.__dry_run = dry_run
 
     def _execute(self) -> None:
-        subprocess.run(
-            CMD.format(
-                remote_path=self.__remote_path,
-                dry_run="--dry-run" if self.__dry_run else "",
-            ).split(),
+        command = CMD.format(
+            remote_path=self.__remote_path,
+            dry_run="--dry-run" if self.__dry_run else "",
         )
+        log.info("Выполнение команды:\n{0}".format(command))
+        os.system(command)  # noqa: S605
