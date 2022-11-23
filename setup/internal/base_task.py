@@ -50,10 +50,13 @@ class BaseTask(ABC):
         -------
         Строковое предствление
         """
-        return "{name} - {desc}".format(
-            name=self.name,
-            desc=self.desc,
-        )
+        try:
+            return "{name} - {desc}".format(
+                name=self.name,
+                desc=self.desc,
+            )
+        except ValueError:
+            return self.desc
 
     @property
     def desc(self) -> str:
