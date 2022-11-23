@@ -3,6 +3,19 @@
 Скрипты установки
 
 ```sh
+git clone https://github.com/Konstantin-Dudersky/setup.git setup_temp \
+&& rm -rf setup_temp/.git \
+&& rsync -va setup_temp/ setup \
+&& rm -rf setup_temp
+```
+
+
+
+
+
+
+
+```sh
 sudo chmod +x src/python.py && ./src/python.py 3.10.5 # установка нужной версии python
 sudo chmod +x src/poetry.py && ./src/poetry.py # установка poetry
 poetry install --no-dev
