@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Установка poetry."""
 
 import logging
@@ -12,7 +11,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-class PoetryBase(BaseTask):
+class _PoetryBase(BaseTask):
     def __init__(
         self,
         desc: str,
@@ -23,7 +22,9 @@ class PoetryBase(BaseTask):
         self._dirs = dirs
 
 
-class PoetryInstall(PoetryBase):
+class PoetryInstall(_PoetryBase):
+    """Установка пакетов."""
+
     def _execute(self) -> None:
         for directory in self._dirs:
             log.info("Установка в папке: {0}".format(directory))
@@ -35,7 +36,9 @@ class PoetryInstall(PoetryBase):
             ).execute()
 
 
-class PoetryRemove(PoetryBase):
+class PoetryRemove(_PoetryBase):
+    """Удалить виртуальные окружения."""
+
     def _execute(self) -> None:
         for directory in self._dirs:
             log.info("Удалить в папке: {0}".format(directory))
@@ -47,13 +50,31 @@ class PoetryRemove(PoetryBase):
             ).execute()
 
 
-class PoetryUpdate(PoetryBase):
+class PoetryUpdate(_PoetryBase):
+    """Обновление пакетов."""
+
     def _execute(self) -> None:
         for directory in self._dirs:
             log.info("Обновить в папке: {0}".format(directory))
             SimpleCommand(
                 desc="Обновление окружения poetry",
                 command="poetry update",
+                need_confirm=False,
+                work_dir_rel=directory,
+            ).execute()
+
+
+class PoetryShowOutdated(_PoetryBase):
+    """Проверка устаревших пакетов."""
+
+    def _execute(self) -> None:
+        for directory in self._dirs:
+            log.info(
+                "Проверка устаревших пакетов в папке: {0}".format(directory),
+            )
+            SimpleCommand(
+                desc="Проверка устаревших пакетов",
+                command="poetry show -o",
                 need_confirm=False,
                 work_dir_rel=directory,
             ).execute()
