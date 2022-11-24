@@ -1,7 +1,7 @@
 """Скрипты установки."""
 
 from .code_sync import CodeSync
-from .simple_command import SimpleCommand
+from .simple_command import SimpleCommand, SimpleCommandMultifolder
 from .internal.base_task import BaseTask
 from .internal.compose_task import ComposeTask
 
