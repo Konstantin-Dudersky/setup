@@ -2,82 +2,11 @@
 
 import logging
 import os
-from typing import Callable, Iterable
+from typing import Callable
 
-from .internal.base_task import BaseTask
-from .simple_command import SimpleCommand
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-
-class _PoetryBase(BaseTask):
-    def __init__(
-        self,
-        desc: str,
-        dirs: Iterable[str],
-        need_confirm: bool = True,
-    ) -> None:
-        super().__init__(desc, need_confirm)
-        self._dirs = dirs
-
-
-class PoetryInstall(_PoetryBase):
-    """Установка пакетов."""
-
-    def _execute(self) -> None:
-        for directory in self._dirs:
-            log.info("Установка в папке: {0}".format(directory))
-            SimpleCommand(
-                desc="Установка окружения poetry",
-                command="poetry install",
-                need_confirm=False,
-                work_dir_rel=directory,
-            ).execute()
-
-
-class PoetryRemove(_PoetryBase):
-    """Удалить виртуальные окружения."""
-
-    def _execute(self) -> None:
-        for directory in self._dirs:
-            log.info("Удалить в папке: {0}".format(directory))
-            SimpleCommand(
-                desc="Удаление окружения poetry",
-                command="poetry env remove --all",
-                need_confirm=False,
-                work_dir_rel=directory,
-            ).execute()
-
-
-class PoetryUpdate(_PoetryBase):
-    """Обновление пакетов."""
-
-    def _execute(self) -> None:
-        for directory in self._dirs:
-            log.info("Обновить в папке: {0}".format(directory))
-            SimpleCommand(
-                desc="Обновление окружения poetry",
-                command="poetry update",
-                need_confirm=False,
-                work_dir_rel=directory,
-            ).execute()
-
-
-class PoetryShowOutdated(_PoetryBase):
-    """Проверка устаревших пакетов."""
-
-    def _execute(self) -> None:
-        for directory in self._dirs:
-            log.info(
-                "Проверка устаревших пакетов в папке: {0}".format(directory),
-            )
-            SimpleCommand(
-                desc="Проверка устаревших пакетов",
-                command="poetry show -o",
-                need_confirm=False,
-                work_dir_rel=directory,
-            ).execute()
 
 
 # obsolete ---------------------------------------------------------------------

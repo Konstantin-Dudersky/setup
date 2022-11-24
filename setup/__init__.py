@@ -27,6 +27,7 @@ from .timescaledb_update_db import main as timescaledb_update_db
 
 __all__ = [
     "SimpleCommand",
+    "SimpleCommandMultifolder",
     "BaseTask",
     "ComposeTask",
     "CodeSync",
