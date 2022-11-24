@@ -18,7 +18,10 @@ class DockerMoveImages(BaseTask):
         repo_from: str,
         repo_to: str,
         arch: str = "linux/amd64",
+        desc: str = "Перемещение образов docker между репозиториями",
+        need_confirm: bool = True,
     ) -> None:
+        super().__init__(desc, need_confirm)
         self.__profile = profile
         self.__repo_from = repo_from
         self.__repo_to = repo_to
