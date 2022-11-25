@@ -52,4 +52,5 @@ __all__ = [
     "tauri_build",
     "timescaledb_install",
     "timescaledb_update_db",
+    "user_intercation",
 ]
