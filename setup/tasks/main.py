@@ -47,10 +47,10 @@ class Runner(object):
 
     def __print(self) -> None:
         log.debug("\nЗадачи:")
-        for st in self.__simple_tasks:
+        for st in self.__simple_tasks.values():
             log.debug("* {0}".format(st))
         log.debug("\nКомбинированные задачи:")
-        for ct in self.__compose_tasks:
+        for ct in self.__compose_tasks.values():
             log.debug(ct)
 
     def __try_start_simple_task(self, task_name: str) -> bool:
