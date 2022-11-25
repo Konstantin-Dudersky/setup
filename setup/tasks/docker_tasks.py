@@ -5,9 +5,10 @@
 
 import logging
 import os
-from typing import Callable, List, Literal, Optional
+from typing import Callable, Literal
 
-from ._shared import dir_rel_to_abs, get_logger
+from ._shared import get_logger
+from ..internal.base_task import BaseTask
 
 
 log = get_logger(__name__, logging.DEBUG)
@@ -63,128 +64,33 @@ def install() -> Callable[[], None]:
     return _task
 
 
-def _output_build(stream: List[str]) -> None:
-    for item in stream[1]:
-        for key, value in item.items():
-            if key == "stream":
-                text: str = value.strip()
-                if text:
-                    print(text)
+TEMPL: str = "docker run --rm -w {work_dir} --pull always --mount {mount} {image} {command}"
 
 
-def build(
-    work_path_rel: str = "../server",
-    dockerfile: str = "Dockerfile",
-    name: str = "inosat/image",
-    tag: str = "latest",
-    platform: platforms = "linux/amd64",
-) -> Callable[[], None]:
-    """Собрать образ."""
+class DockerRunExecRemove(BaseTask):
+    """Создать контейнер, выполнить команду и удалить контейнер."""
 
-    def _task() -> None:
-        work_path_abs: str = dir_rel_to_abs(work_path_rel)
-        os.chdir(work_path_abs)
-        client: docker.client.DockerClient = docker.from_env()
-        result = client.images.build(
-            path=".",
-            dockerfile=dockerfile,
-            tag=f"{name}:{tag}",
-            platform=platform,
-            forcerm=True,
-            network_mode="host",
-            pull=True,
-        )
-        _output_build(result)
-        log.info("{name} собран".format(name=name))
+    def __init__(
+        self,
+        desc: str,
+        need_confirm: bool = True,
+        mount: str = "type=bind,src=`pwd`,dst=/root/code",
+        image: str = "target:5000/smarthome/sh_setup",
+        command: str = "poetry run create_env",
+        work_dir: str = "/root/code/setup",
+    ) -> None:
+        super().__init__(desc, need_confirm)
+        self.__mount = mount
+        self.__image = image
+        self.__command = command
+        self.__work_dir = work_dir
 
-    return _task
-
-
-def push(
-    name: str = "inosat/image",
-) -> None:
-    client: docker.client.DockerClient = docker.from_env()
-    line: str
-    for line in client.images.push(name, stream=True, decode=True):
-        log.debug(line)
-    log.info("{name} опубликован".format(name=name))
-
-
-def build_and_push(
-    work_path_rel: str = "../server",
-    dockerfile: str = "Dockerfile",
-    name: str = "inosat/image",
-    tag: str = "latest",
-    platform: platforms = "linux/amd64",
-) -> Callable[[], None]:
-    """Собрать образ."""
-
-    def _task() -> None:
-        build(
-            work_path_rel=work_path_rel,
-            dockerfile=dockerfile,
-            name=name,
-            tag=tag,
-            platform=platform,
-        )()
-        push(name)
-
-    return _task
-
-
-def exec_in_container(
-    container: str,
-    command: str,
-) -> Callable[[], None]:
-    """Выполнить команду в контейнере."""
-
-    def _task() -> None:
-        os.system(f"docker exec {container} {command}")
-
-    return _task
-
-
-def start_exec_in_container(
-    container: str,
-    command: str,
-) -> Callable[[], None]:
-    """Выполнить команду в контейнере."""
-
-    def _task() -> None:
-        log.info("start container: %s", container)
-        os.system(f"docker container start {container}")
-        exec_in_container(container, command)()
-        log.info("stop container: %s", container)
-        os.system(f"docker container stop {container}")
-
-    return _task
-
-
-TEMPL: str = "docker run --rm --pull always {mount} {image} {command}"
-
-
-def run_exec_remove(
-    work_dir_rel: str = "../server",
-    image: str = "image",
-    mount: Optional[str] = "type=bind,src=`pwd`,dst=/home/projects/coca/code",
-    command: str = "ls -la",
-) -> Callable[[], None]:
-    def _task() -> None:
-        curr_dir: str = os.getcwd()
-        work_dir_abs = dir_rel_to_abs(work_dir_rel)
-        log.info("Рабочая папка: %s", work_dir_abs)
-        os.chdir(work_dir_abs)
-        if mount is None:
-            mount_str: str = ""
-        else:
-            mount_str: str = "--mount {0}".format(mount)
+    def _execute(self) -> None:
         os.system(
             TEMPL.format(
-                mount=mount_str,
-                image=image,
-                command=command,
+                mount=self.__mount,
+                image=self.__image,
+                command=self.__command,
+                work_dir=self.__work_dir,
             ),
         )
-        os.chdir(curr_dir)
-
-    return _task
