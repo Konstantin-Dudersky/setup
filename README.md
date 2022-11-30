@@ -10,7 +10,9 @@ git clone https://github.com/Konstantin-Dudersky/setup.git setup_clone \
 && rm -rf setup_clone
 ```
 
-Для добавления скриптов, требующих локальной установки, можно создать свой файл, и написать задачи в разделе `[tool.poetry.scripts]`.
+## Локальные задачи
+
+Для добавления задач, требующих установки виртуального окружения, можно создать свой файл, и написать задачи в разделе `[tool.poetry.scripts]`.
 
 - Создаем файл в папке `setup/setup/local_tasks.py`
 
