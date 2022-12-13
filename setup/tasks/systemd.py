@@ -151,7 +151,7 @@ class SystemdDockerCompose(BaseTask):
             profile=self.__profile,
         )
         log.info("Файл сервиса:\n%s", service)
-        filename: str = "src/{0}.service".format(self.__service_name)
+        filename: str = "{0}.service".format(self.__service_name)
         with open(filename, "w", encoding="utf-8") as file:
             file.write(service)
         os.system(f"sudo mv {filename} /etc/systemd/system")
