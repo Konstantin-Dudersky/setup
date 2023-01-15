@@ -22,10 +22,11 @@ git clone https://github.com/Konstantin-Dudersky/setup.git setup_clone \
 """
 
 import sys
-from typing import NamedTuple, Set
+from typing import NamedTuple, Set, TYPE_CHECKING
 
 from setup import setup
-# import setup
+if TYPE_CHECKING:
+    import setup
 
 SYSTEMD_SERVICE: str = "smarthome"
 IMAGE_SETUP: str = "target:5000/inosat/kleck_setup"
@@ -57,6 +58,7 @@ class Tasks(NamedTuple):
         desc="Синхронизация кода с целевой системой",
         remote_path="admin@target:/home/admin/code",
     )
+    docker_install: setup.BaseTask = setup.DockerInstall()
     poetry_install: setup.BaseTask = setup.SimpleCommandMultifolder(
         desc="Установка виртуальных окружений python",
         dirs=PYTHON_PROJECTS,
