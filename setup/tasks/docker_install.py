@@ -1,3 +1,5 @@
+"""Установка Docker."""
+
 import logging
 import os
 
@@ -6,12 +8,16 @@ from ..internal.base_task import BaseTask
 _log = logging.getLogger(__name__)
 _log.setLevel(logging.DEBUG)
 
+
 class DockerInstall(BaseTask):
+    """Установка Docker."""
+
     def __init__(
         self,
         desc: str = "Установка Docker",
         need_confirm: bool = True,
     ) -> None:
+        """Установка Docker."""
         super().__init__(desc, need_confirm)
 
     def _execute(self) -> None:

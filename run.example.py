@@ -22,9 +22,10 @@ git clone https://github.com/Konstantin-Dudersky/setup.git setup_clone \
 """
 
 import sys
-from typing import NamedTuple, Set, TYPE_CHECKING
+from typing import Final, NamedTuple, Set, TYPE_CHECKING
 
 from setup import setup
+
 if TYPE_CHECKING:
     import setup
 
@@ -32,7 +33,6 @@ SYSTEMD_SERVICE: str = "smarthome"
 IMAGE_SETUP: str = "target:5000/inosat/kleck_setup"
 BIND_SRC_FOLDER: str = "type=bind,src=`pwd`,dst=/root/code"
 PARENT_FOLDER: str = "../."
-
 
 PYTHON_PROJECTS: Set[str] = {
     "./db",
@@ -43,6 +43,9 @@ PYTHON_PROJECTS: Set[str] = {
 NG_PROJECTS: Set[str] = {
     "./webapp",
 }
+REMOTE_USER: Final[str] = "root"
+REMOTE_HOST: Final[str] = "target"
+REMOTE_CODE_FOLDER: Final[str] = "/home/code"
 
 
 class Tasks(NamedTuple):
@@ -59,6 +62,13 @@ class Tasks(NamedTuple):
         remote_path="admin@target:/home/admin/code",
     )
     docker_install: setup.BaseTask = setup.DockerInstall()
+    docker_install_remote: setup.BaseTask = setup.RemoteCommand(
+        desc="Устанока Docker на целевой машине",
+        command="./run.py docker_install",
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
+    )
     poetry_install: setup.BaseTask = setup.SimpleCommandMultifolder(
         desc="Установка виртуальных окружений python",
         dirs=PYTHON_PROJECTS,
