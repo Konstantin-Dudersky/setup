@@ -144,14 +144,44 @@ class Tasks(NamedTuple):
         repo_to="target:5000",
         arch="linux/arm64",
     )
+    docker_compose_pull_remote: setup.BaseTask = setup.RemoteCommand(
+        desc="Загрузить образы docker из хранилища",
+        command="docker compose --profile {profile} pull".format(
+            profile="notification",
+        ),
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
+    )
+    docker_compose_up_system: setup.BaseTask = setup.RemoteCommand(
+        desc="Запуск системных образов Docker",
+        command="docker compose --profile system up -d",
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
+    )
     create_env: setup.BaseTask = setup.docker_tasks.DockerRunExecRemove(
         desc="Создать файл .env",
-        image="localhost:5000/smarthome/sh_setup",
+        image=IMAGE_SETUP,
         command="poetry run create_env",
+    )
+    create_env_remote: setup.BaseTask = setup.RemoteCommand(
+        desc="Создать файл .env на целевой машине",
+        command="./run.py create_env",
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
+    )
+    edit_env_remote: setup.BaseTask = setup.RemoteCommand(
+        desc="Редактировать файл .env на целевой машине",
+        command="nano .env",
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
     )
     export_env_schema: setup.BaseTask = setup.docker_tasks.DockerRunExecRemove(
         desc="Экспортировать настройки в json файл",
-        image="localhost:5000/smarthome/sh_setup",
+        image=IMAGE_SETUP,
         command="poetry run export_env_schema",
     )
     systemd_create: setup.BaseTask = setup.systemd.SystemdDockerCompose(
@@ -159,6 +189,13 @@ class Tasks(NamedTuple):
         profile="pi",
         work_dir_rel=".",
         service_name=SYSTEMD_SERVICE,
+    )
+    systemd_create_remote: setup.BaseTask = setup.RemoteCommand(
+        desc="Создание сервиса systemd на целевой машине",
+        command="./run.py systemd_create",
+        remote_user=REMOTE_USER,
+        remote_host=REMOTE_HOST,
+        remote_folder=REMOTE_CODE_FOLDER,
     )
 
 
@@ -170,10 +207,6 @@ class TasksOld(NamedTuple):
     #         project="client",
     #         base_href="/",
     #     ),
-    # )
-    # docker_install: setup.Task = setup.Task(
-    #     desc="Установка docker",
-    #     task=setup.docker_tasks.install(),
     # )
     # server_export_openapi: setup.Task = setup.Task(
     #     desc="Экспорт спецификации API",
@@ -267,14 +300,19 @@ class ComposeTasks(NamedTuple):
         desc="Установка на целевой системе, ч.1",
         subtasks=[
             TASKS.codesync,
+            TASKS.docker_install_remote,
+            TASKS.docker_compose_up_system,
+            TASKS.docker_move_images,
+            TASKS.create_env_remote,
+            TASKS.edit_env_remote,
+            TASKS.docker_compose_pull_remote,
+            TASKS.systemd_create_remote,
         ],
     )
     target_install_2: setup.ComposeTask = setup.ComposeTask(
         desc="Установка на целевой системе, ч.2",
         subtasks=[
             TASKS.codesync,
-            TASKS.docker_move_images,
-            TASKS.systemd_create,
         ],
     )
     target_update: setup.ComposeTask = setup.ComposeTask(

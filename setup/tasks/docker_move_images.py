@@ -30,10 +30,17 @@ class DockerMoveImages(BaseTask):
     def _execute(self) -> None:
         target_images = self.__get_images_from_compose(self.__profile)
         log.info("target images: \n{0}\n".format(target_images))
-        images_wo_repo = self.__remove_repo(
+        images_wo_repo_to = self.__remove_repo(
+            images=target_images,
+            repo=self.__repo_to,
+        )
+        images_wo_repo_from = self.__remove_repo(
             images=target_images,
             repo=self.__repo_from,
         )
+        images_wo_repo_set = set(images_wo_repo_from)
+        images_wo_repo_set.update(set(images_wo_repo_to))
+        images_wo_repo = list(images_wo_repo_set)
         log.info("images w/o repo: \n{0}\n".format(images_wo_repo))
         self.__pull_images(images_wo_repo, self.__repo_from, self.__arch)
         self.__add_tag(
