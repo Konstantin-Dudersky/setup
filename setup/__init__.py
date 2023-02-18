@@ -4,7 +4,6 @@ from .internal.base_task import BaseTask
 from .internal.compose_task import ComposeTask
 from .tasks.code_sync import CodeSync
 from .tasks.docker_install import DockerInstall
-from .tasks.docker_move_images import DockerMoveImages
 from .tasks.remote_command import RemoteCommand
 from .tasks.simple_command import SimpleCommand, SimpleCommandMultifolder
 
@@ -35,7 +34,6 @@ __all__ = [
     "ComposeTask",
     "CodeSync",
     "DockerInstall",
-    "DockerMoveImages",
     "RemoteCommand",
     "Runner",
     "call_func",

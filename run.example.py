@@ -138,12 +138,6 @@ class Tasks(NamedTuple):
         desc="Сборка образов docker",
         command="docker buildx bake --builder builder -f docker-bake.hcl --push pi",
     )
-    docker_move_images: setup.BaseTask = setup.DockerMoveImages(
-        profile="pi",
-        repo_from="localhost:5000",
-        repo_to="target:5000",
-        arch="linux/arm64",
-    )
     docker_compose_pull_remote: setup.BaseTask = setup.RemoteCommand(
         desc="Загрузить образы docker из хранилища",
         command="docker compose --profile {profile} pull".format(
